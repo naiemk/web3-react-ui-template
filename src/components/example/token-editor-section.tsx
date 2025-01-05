@@ -10,9 +10,15 @@ import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AlertCircle } from 'lucide-react'
 import { ChainLabel } from '@/components/web3/chain-label'
-import { useConnectWalletSimple, getChain, ChainConstants, Token } from 'web3-react-ui'
+import { useConnectWalletSimple, getChain, ChainConstants, Token, ApprovableButton } from 'web3-react-ui'
 import { NetworkSelectorModal } from '@/components/web3/network-selector-modal'
 import { TokenBalance } from '@/components/web3/token-balance'
+
+interface AppConfig {
+  bridgeContracts: {
+    [chainId: string]: string
+  }
+}
 
 export function TokenEditorSection() {
   const [amount, setAmount] = useState('')
@@ -32,6 +38,8 @@ export function TokenEditorSection() {
   const [isUnclaimedBalanceModalOpen, setIsUnclaimedBalanceModalOpen] = useState(false)
   const chainIds = Object.keys(ChainConstants);
   const tokens = GLOBAL_CONFIG['TOKENS'] as Token[] || []; // This comes from the config file passed in layout...
+  const appConfig = GLOBAL_CONFIG['APP'] as AppConfig || {};
+  const bridgeContractAddress = appConfig?.bridgeContracts?.[chainId || '-'] || null;
 
   const handleNetowrkSelect = (networkId: string) => {
     onNetworkSelect.selector && onNetworkSelect.selector(networkId)
@@ -104,12 +112,32 @@ export function TokenEditorSection() {
             </Alert>
           )} 
         {/* Swap Button */}
-        <Button 
-          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-          onClick={handleSwap}
-        >
-          Swap
-        </Button>
+        <ApprovableButton
+          chainId={chainId!}
+          token={selectedToken?.address || ''}
+          amount={amount}
+          spender={bridgeContractAddress!}
+          approveButton={(onApprove, pending) => (<Button 
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+                  onClick={onApprove}
+                  disabled={pending}
+                >
+                  Swap {pending ? '...' : ''}
+                </Button>)}
+          actionButton={
+                <Button 
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+                  onClick={handleSwap}
+                >
+                  Swap
+                </Button>}
+          unknownState={ <Button 
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+                  disabled={true}
+                >
+                  Swap
+                </Button>}
+        />
       </div>
 
       <TokenSelectorModal

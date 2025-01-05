@@ -39,6 +39,7 @@ export default function RootLayout({
           providersConfigUrl="https://raw.githubusercontent.com/naiemk/web3-react-ui-template/refs/heads/main/resources/configs/network-list.json"
           configUrlMaps={{
             "TOKENS": "https://raw.githubusercontent.com/naiemk/web3-react-ui-template/refs/heads/main/resources/configs/tokens.json",
+            "APP": "https://raw.githubusercontent.com/naiemk/web3-react-ui-template/refs/heads/main/resources/configs/bridge-contracts.json"
           }}
           onError={(error) => setError(error)}
           onConfigLoaded={(k, v) => {
