@@ -4,15 +4,15 @@ import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { ExternalLink, X } from 'lucide-react'
-import { getExplorerUrl } from "@/utils/web3"
 import { useTheme } from './theme-provider'
 import { AddressBox } from './address-box'
+import { getChain, Utils } from 'web3-react-ui'
 
 interface WalletModalProps {
   isOpen: boolean
   onClose: () => void
   address: string
-  chainId: number
+  chainId: string
   balance: {
     bnb: string
     cake: string
@@ -42,9 +42,6 @@ export function WalletModal({
         <div className="flex flex-col h-full max-h-full overflow-hidden">
           <div className="flex-shrink-0 flex justify-between items-center p-4 border-b border-border">
             <h2 className="text-xl font-bold">Your Wallet</h2>
-            <Button variant="ghost" size="icon" onClick={onClose}>
-              <X className="h-4 w-4" />
-            </Button>
           </div>
 
           <Tabs defaultValue="wallet" className="flex-grow flex flex-col min-h-0">
@@ -65,21 +62,22 @@ export function WalletModal({
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="h-6 w-6 rounded-full bg-yellow-400 flex-shrink-0" />
-                  <span className="text-sm">BNB Smart Chain</span>
+                  <img src={getChain(chainId)?.icon} alt={getChain(chainId)?.label || '?'} width={24} height={24} />
+                  {/* <div className="h-6 w-6 rounded-full bg-yellow-400 flex-shrink-0" /> */}
+                  <span className="text-sm">{getChain(chainId)?.label || '?'}</span>
                 </div>
                 <a
-                  href={getExplorerUrl(address, chainId)}
+                  href={Utils.addressLink(chainId, address)!}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-1 text-sm text-primary hover:text-primary/80"
                 >
-                  BscScan
+                  Explorer
                   <ExternalLink className="h-4 w-4" />
                 </a>
               </div>
 
-              <div>
+              {/* <div>
                 <div className="flex justify-between text-sm mb-2">
                   <span className="text-muted-foreground">BNB Balance</span>
                   <span>{balance.bnb}</span>
@@ -88,7 +86,7 @@ export function WalletModal({
                   <span className="text-muted-foreground">CAKE Balance</span>
                   <span>{balance.cake}</span>
                 </div>
-              </div>
+              </div> */}
 
               <Button
                 onClick={onDisconnect}

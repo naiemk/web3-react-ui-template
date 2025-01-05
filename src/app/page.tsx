@@ -1,6 +1,5 @@
 import { Layout } from '@/components/web3/layout'
 import { TokenEditorSection } from '@/components/web3/token-editor-section'
-import Image from "next/image";
 
 export default function Home() {
   return (

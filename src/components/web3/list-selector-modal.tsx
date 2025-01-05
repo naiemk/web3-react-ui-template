@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import Image from 'next/image'
-import { X } from 'lucide-react'
 
 interface CommonItem {
   item: any
@@ -95,7 +94,7 @@ export function ListSelectorModal({
                     onClick={() => onSelect(commonItem.item)}
                   >
                     <div className="w-5 h-5 rounded-full overflow-hidden bg-muted">
-                      <Image
+                      <img
                         src={commonItem.logo}
                         alt={commonItem.name}
                         width={20}

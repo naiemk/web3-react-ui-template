@@ -8,11 +8,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { X } from 'lucide-react'
+import { getChain } from 'web3-react-ui'
 
 interface UnclaimedBalanceModalProps {
   isOpen: boolean
   onClose: () => void
-  connectedNetwork: string
+  chainId: string
   unclaimedBalance: {
     amount: string
     token: string
@@ -23,7 +24,7 @@ interface UnclaimedBalanceModalProps {
 export function UnclaimedBalanceModal({
   isOpen,
   onClose,
-  connectedNetwork,
+  chainId,
   unclaimedBalance,
   onClaim
 }: UnclaimedBalanceModalProps) {
@@ -42,7 +43,7 @@ export function UnclaimedBalanceModal({
         </DialogHeader>
         <div className="py-4">
           <p className="text-sm text-muted-foreground mb-4">
-            You have unclaimed balance on the {connectedNetwork}:
+            You have unclaimed balance on the {getChain(chainId)?.label}:
           </p>
           <p className="text-2xl font-bold mb-6 text-foreground">
             {unclaimedBalance.amount} {unclaimedBalance.token}

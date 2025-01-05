@@ -4,8 +4,15 @@ import { ChevronDown } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
-import { TokenEditorProps } from '../types/token'
-import Image from 'next/image'
+import { Token } from '@/types/token'
+
+export interface TokenEditorProps {
+  value: string
+  onChange: (value: string) => void
+  onTokenSelect: () => void
+  selectedToken: Token | null
+  disabled?: boolean
+}
 
 export function TokenEditor({
   value,
@@ -34,14 +41,14 @@ export function TokenEditor({
         className="flex items-center gap-2 px-2 py-1 h-auto font-normal hover:bg-accent dark:hover:bg-accent dark:text-foreground"
       >
         <div className="w-8 h-8 rounded-full overflow-hidden bg-yellow-400 flex-shrink-0">
-          <Image
-            src={selectedToken.icon}
-            alt={selectedToken.name}
+          <img
+            src={selectedToken?.logoURI || ''}
+            alt={selectedToken?.name || ''}
             width={32}
             height={32}
           />
         </div>
-        <span className="text-lg text-foreground">{selectedToken.symbol}</span>
+        <span className="text-lg text-foreground">{selectedToken?.symbol || 'Select Token'}</span>
         <ChevronDown className="h-4 w-4 text-muted-foreground" />
       </Button>
 

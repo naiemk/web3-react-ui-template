@@ -3,24 +3,21 @@
 import { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { ChevronDown } from 'lucide-react'
-import Image from 'next/image'
 import { NetworkSelectorModal } from './network-selector-modal'
-import type { Chain } from '@web3-onboard/common'
+import { getChain } from 'web3-react-ui'
 
 interface NetworkSelectorProps {
-  selectedNetwork: Chain
-  onNetworkChange: (network: Chain) => void
-  networks: Chain[]
+  selectedNetworkId: string
+  onOpenModal: () => void
   label?: string
 }
 
 export function NetworkSelector({
-  selectedNetwork,
-  onNetworkChange,
-  networks,
-  label = "To (Destination Network)"
+  selectedNetworkId,
+  onOpenModal,
+  label
 }: NetworkSelectorProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const selectedNetwork = getChain(selectedNetworkId)
 
   return (
     <div className="space-y-2">
@@ -30,14 +27,15 @@ export function NetworkSelector({
       <Button
         variant="outline"
         role="combobox"
-        aria-expanded={isModalOpen}
+        aria-expanded={false}
         aria-label="Select destination network"
         className="w-full justify-between bg-card border border-border hover:bg-accent hover:text-accent-foreground dark:bg-background dark:border-border dark:hover:bg-accent dark:text-foreground"
-        onClick={() => setIsModalOpen(true)}
+        onClick={() => onOpenModal()}
       >
+        {selectedNetwork ? (
         <div className="flex items-center gap-2">
           <div className="w-6 h-6 rounded-full overflow-hidden bg-muted">
-            <Image
+            <img
               src={selectedNetwork.icon || '/placeholder.svg?height=24&width=24'}
               alt={selectedNetwork.label}
               width={24}
@@ -46,19 +44,10 @@ export function NetworkSelector({
           </div>
           <span className="font-medium">{selectedNetwork.label}</span>
         </div>
+        ) : <div className="text-muted-foreground">Select Network</div>}
         <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground dark:text-muted-foreground" />
       </Button>
 
-      <NetworkSelectorModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSelect={(network) => {
-          onNetworkChange(network)
-          setIsModalOpen(false)
-        }}
-        selectedNetwork={selectedNetwork}
-        networks={networks}
-      />
     </div>
   )
 }

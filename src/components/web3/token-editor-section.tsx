@@ -5,118 +5,41 @@ import { TokenEditor } from './token-editor'
 import { TokenSelectorModal } from './token-selector-modal'
 import { NetworkSelector } from './network-selector'
 import { UnclaimedBalanceModal } from './unclaimed-balance-modal'
-import { Token } from '../types/token'
-import type { Chain } from '@web3-onboard/common'
-import Image from 'next/image'
+import { GLOBAL_CONFIG } from '@/types/token'
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AlertCircle } from 'lucide-react'
-
-// Mock tokens data
-const mockTokens: Token[] = [
-  {
-    symbol: 'BNB',
-    name: 'BNB Smart Chain',
-    icon: '/placeholder.svg?height=32&width=32',
-    decimals: 18,
-    balance: '0.027503'
-  },
-  {
-    symbol: 'USDT',
-    name: 'Tether USD',
-    icon: '/placeholder.svg?height=32&width=32',
-    decimals: 18,
-    address: '0x55d398326f99059ff775485246999027b3197955',
-    balance: '0.00'
-  },
-  {
-    symbol: 'CAKE',
-    name: 'PancakeSwap Token',
-    icon: '/placeholder.svg?height=32&width=32',
-    decimals: 18,
-    address: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
-    balance: '0.00'
-  },
-  {
-    symbol: 'BTCB',
-    name: 'Bitcoin BEP2',
-    icon: '/placeholder.svg?height=32&width=32',
-    decimals: 18,
-    address: '0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c',
-    balance: '0.00'
-  }
-]
-
-// Mock networks data
-const mockNetworks: Chain[] = [
-  {
-    id: '0x1',
-    token: 'ETH',
-    label: 'Ethereum',
-    rpcUrl: '',
-    icon: '/placeholder.svg?height=32&width=32'
-  },
-  {
-    id: '0x38',
-    token: 'BNB',
-    label: 'BNB Smart Chain',
-    rpcUrl: '',
-    icon: '/placeholder.svg?height=32&width=32'
-  },
-  {
-    id: '0x144',
-    token: 'ETH',
-    label: 'zkSync',
-    rpcUrl: '',
-    icon: '/placeholder.svg?height=32&width=32'
-  },
-  {
-    id: '0xa4b1',
-    token: 'ETH',
-    label: 'Arbitrum One',
-    rpcUrl: '',
-    icon: '/placeholder.svg?height=32&width=32'
-  },
-  {
-    id: '0xe708',
-    token: 'ETH',
-    label: 'Linea',
-    rpcUrl: '',
-    icon: '/placeholder.svg?height=32&width=32'
-  },
-  {
-    id: '0x2105',
-    token: 'ETH',
-    label: 'Base',
-    rpcUrl: '',
-    icon: '/placeholder.svg?height=32&width=32'
-  },
-  {
-    id: '0x15eb',
-    token: 'BNB',
-    label: 'opBNB',
-    rpcUrl: '',
-    icon: '/placeholder.svg?height=32&width=32'
-  },
-  {
-    id: '0x44d',
-    token: 'MATIC',
-    label: 'Polygon zkEVM',
-    rpcUrl: '',
-    icon: '/placeholder.svg?height=32&width=32'
-  }
-]
+import { ChainLabel } from './chain-label'
+import { useConnectWalletSimple, getChain, ChainConstants, useErc20, useContracts, ERC20_ABI, GlobalCache, Token } from 'web3-react-ui'
+import { NetworkSelectorModal } from './network-selector-modal'
+import { TokenBalance } from './token-balance'
 
 export function TokenEditorSection() {
   const [amount, setAmount] = useState('')
-  const [selectedToken, setSelectedToken] = useState(mockTokens[0])
+  const { address, chainId} = useConnectWalletSimple();
+
+  // We separate modal from selector, because we want to use the same modal for multiple selectors
+  // Token selector
   const [isTokenSelectorOpen, setIsTokenSelectorOpen] = useState(false)
-  const [selectedNetwork, setSelectedNetwork] = useState<Chain>(mockNetworks[0])
+  const [selectedToken, setSelectedToken] = useState<Token | null>(null)
+  const [onTokenSelect, setOnTokenSelect] = useState<any>({})
+  // Network selector
+  const [isNetworkSelectorOpen, setIsNetowrkSelectorOpen] = useState(false)
+  const [selectedNetworkId, setSelectedNetworkId] = useState<string>('');
+  const [onNetworkSelect, setOnNetworkSelect] = useState<any>({})
+
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [isUnclaimedBalanceModalOpen, setIsUnclaimedBalanceModalOpen] = useState(false)
-  const connectedNetwork = mockNetworks[3] // Arbitrum for this example
+  const chainIds = Object.keys(ChainConstants);
+  const tokens = GLOBAL_CONFIG['TOKENS'] as Token[] || []; // This comes from the config file passed in layout...
+
+  const handleNetowrkSelect = (networkId: string) => {
+    onNetworkSelect.selector && onNetworkSelect.selector(networkId)
+    setIsNetowrkSelectorOpen(false)
+  }
 
   const handleTokenSelect = (token: Token) => {
-    setSelectedToken(token)
+    onTokenSelect.selector && onTokenSelect.selector(token)
     setIsTokenSelectorOpen(false)
   }
 
@@ -136,7 +59,7 @@ export function TokenEditorSection() {
       <Alert>
         <AlertCircle className="h-4 w-4" />
         <AlertDescription>
-          You have some unclaimed balance on the {connectedNetwork.label}.{' '}
+          You have some unclaimed balance on the {getChain(chainId || '1')?.label}.{' '}
           <button
             onClick={() => setIsUnclaimedBalanceModalOpen(true)}
             className="font-medium underline underline-offset-4"
@@ -147,40 +70,39 @@ export function TokenEditorSection() {
       </Alert>
 
       <div className="bg-card/50 dark:bg-card/10 backdrop-blur-sm rounded-xl p-4 shadow-xl border border-border space-y-4">
-        {/* Connected Network Section */}
-        <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-full overflow-hidden bg-background">
-              <Image
-                src={connectedNetwork.icon}
-                alt={connectedNetwork.label}
-                width={24}
-                height={24}
-              />
-            </div>
-            <span className="font-medium text-sm text-foreground">Connected to {connectedNetwork.label}</span>
-          </div>
-        </div>
+        <ChainLabel chainId={chainId!} label={`Connected to ${getChain(chainId!)?.label}`} />
 
         <NetworkSelector
-          selectedNetwork={selectedNetwork}
-          onNetworkChange={setSelectedNetwork}
-          networks={mockNetworks}
+          selectedNetworkId={selectedNetworkId}
           label="To (Destination Network)"
+          onOpenModal={() => {
+            const selector = (netId: string) => { setSelectedNetworkId(netId); setSelectedToken(null)}
+            console.log('selector', selector)
+            setOnNetworkSelect({selector});
+            setIsNetowrkSelectorOpen(true)
+          }}
         />
         
         <div className="space-y-2">
           <TokenEditor
             value={amount}
             onChange={setAmount}
-            onTokenSelect={() => setIsTokenSelectorOpen(true)}
+            onTokenSelect={() => {
+              setOnTokenSelect({selector: (token: Token) => setSelectedToken(token)});
+              setIsTokenSelectorOpen(true)
+            }}
             selectedToken={selectedToken}
+            disabled={!selectedNetworkId}
           />
-          <div className="text-sm text-muted-foreground px-2">
-            Balance: {selectedToken.balance} {selectedToken.symbol}
-          </div>
+          {selectedToken && <TokenBalance token={selectedToken} userAddress={address!}/>}
         </div>
 
+       {errorMessage && (
+            <Alert variant="destructive" className="mt-2">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{errorMessage}</AlertDescription>
+            </Alert>
+          )} 
         {/* Swap Button */}
         <Button 
           className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
@@ -195,13 +117,20 @@ export function TokenEditorSection() {
         onClose={() => setIsTokenSelectorOpen(false)}
         onSelect={handleTokenSelect}
         selectedToken={selectedToken}
-        tokens={mockTokens}
+        tokens={tokens.filter(token => token.chainId == selectedNetworkId)}
+      />
+
+      <NetworkSelectorModal
+        isOpen={isNetworkSelectorOpen}
+        onClose={() => setIsNetowrkSelectorOpen(false)}
+        onSelect={handleNetowrkSelect}
+        networkIds={(chainIds || []).filter(id => id !== selectedNetworkId)}
       />
 
       <UnclaimedBalanceModal
         isOpen={isUnclaimedBalanceModalOpen}
         onClose={() => setIsUnclaimedBalanceModalOpen(false)}
-        connectedNetwork={connectedNetwork.label}
+        chainId={chainId!}
         unclaimedBalance={{
           amount: '200',
           token: 'USDT'

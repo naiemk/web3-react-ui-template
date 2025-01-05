@@ -2,9 +2,8 @@
 
 import { Button } from "@/components/ui/button"
 import { Copy, ExternalLink, Plus, X } from 'lucide-react'
-import Image from 'next/image'
-import { Token, TokenSelectorModalProps } from '@/types/token'
-import { copyToClipboard, getExplorerUrl } from '@/utils/web3'
+import { Token } from '@/types/token'
+import { copyToClipboard } from '@/utils/web3'
 import { useToast } from "@/hooks/use-toast"
 import { ListSelectorModal } from './list-selector-modal'
 import {
@@ -13,6 +12,15 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { Utils } from "web3-react-ui"
+
+export interface TokenSelectorModalProps {
+  isOpen: boolean
+  onClose: () => void
+  onSelect: (token: Token) => void
+  selectedToken: Token | null
+  tokens: Token[]
+}
 
 export function TokenSelectorModal({
   isOpen,
@@ -36,9 +44,9 @@ export function TokenSelectorModal({
 
   const handleAddToMetamask = async (token: Token) => {
     try {
-      if (!window.ethereum || !token.address) return
+      if (!(window as any).ethereum || !token.address) return
 
-      await window.ethereum.request({
+      await (window as any).ethereum.request({
         method: 'wallet_watchAsset',
         params: {
           type: 'ERC20',
@@ -46,7 +54,7 @@ export function TokenSelectorModal({
             address: token.address,
             symbol: token.symbol,
             decimals: token.decimals,
-            image: token.icon,
+            image: token.logoURI,
           },
         },
       })
@@ -61,23 +69,24 @@ export function TokenSelectorModal({
     }
   }
 
-  const openExplorer = (address: string) => {
-    window.open(`https://bscscan.com/token/${address}`, '_blank')
+  const openExplorer = (token: Token) => {
+    const url = Utils.addressLink(token.chainId, token.address);
+    url && window.open(url)
   }
 
   const titleBar = (
     <>
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 rounded-full overflow-hidden bg-yellow-400">
-          <Image
-            src={selectedToken.icon}
-            alt={selectedToken.name}
+          <img
+            src={selectedToken?.logoURI || '-'}
+            alt={selectedToken?.name || ''}
             width={32}
             height={32}
           />
         </div>
-        <span className="text-lg font-semibold">{selectedToken.symbol}</span>
-        {selectedToken.address && (
+        <span className="text-lg font-semibold">{selectedToken?.symbol || ''}</span>
+        {selectedToken?.address && (
           <div className="flex items-center gap-1">
             <TooltipProvider>
               <Tooltip>
@@ -102,7 +111,7 @@ export function TokenSelectorModal({
                     variant="ghost"
                     size="icon"
                     className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                    onClick={() => openExplorer(selectedToken.address!)}
+                    onClick={() => openExplorer(selectedToken)}
                   >
                     <ExternalLink className="h-4 w-4" />
                   </Button>
@@ -138,9 +147,9 @@ export function TokenSelectorModal({
     <>
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 rounded-full overflow-hidden bg-yellow-400">
-          <Image
-            src={token.icon}
-            alt={token.symbol}
+          <img
+            src={token?.logoURI || '-'}
+            alt={token?.symbol || ''}
             width={32}
             height={32}
           />
@@ -151,7 +160,7 @@ export function TokenSelectorModal({
         </div>
       </div>
       <div className="text-right text-sm text-muted-foreground">
-        {token.balance || '0'}
+        {'0'}
       </div>
     </>
   )
@@ -159,11 +168,12 @@ export function TokenSelectorModal({
   const commonItems = tokens.slice(0, 3).map(token => ({
     item: token,
     name: token.symbol,
-    logo: token.icon
+    logo: token.logoURI
   }))
 
   return (
     <ListSelectorModal
+      title="Select Token"
       isOpen={isOpen}
       onClose={onClose}
       onSelect={onSelect}
