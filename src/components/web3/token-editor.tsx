@@ -4,7 +4,7 @@ import { ChevronDown } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
-import { Token } from '@/types/token'
+import { Token } from 'web3-react-ui'
 
 export interface TokenEditorProps {
   value: string

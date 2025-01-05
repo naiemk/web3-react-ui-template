@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button"
 import { Copy, ExternalLink, Plus, X } from 'lucide-react'
-import { Token } from '@/types/token'
 import { copyToClipboard } from '@/utils/web3'
 import { useToast } from "@/hooks/use-toast"
 import { ListSelectorModal } from './list-selector-modal'
@@ -12,7 +11,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { Utils } from "web3-react-ui"
+import { Token, Utils } from "web3-react-ui"
 
 export interface TokenSelectorModalProps {
   isOpen: boolean

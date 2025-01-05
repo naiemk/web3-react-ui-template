@@ -1,5 +1,5 @@
-import { Layout } from '@/components/web3/layout'
-import { TokenEditorSection } from '@/components/web3/token-editor-section'
+import { Layout } from '@/components/example/layout'
+import { TokenEditorSection } from '@/components/example/token-editor-section'
 
 export default function Home() {
   return (

@@ -1,9 +1,7 @@
 'use client'
 
-import { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { ChevronDown } from 'lucide-react'
-import { NetworkSelectorModal } from './network-selector-modal'
 import { getChain } from 'web3-react-ui'
 
 interface NetworkSelectorProps {

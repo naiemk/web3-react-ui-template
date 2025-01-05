@@ -1,18 +1,18 @@
 'use client'
 
 import { useState } from 'react'
-import { TokenEditor } from './token-editor'
-import { TokenSelectorModal } from './token-selector-modal'
-import { NetworkSelector } from './network-selector'
+import { TokenEditor } from '@/components/web3/token-editor'
+import { TokenSelectorModal } from '@/components/web3/token-selector-modal'
+import { NetworkSelector } from '@/components/web3/network-selector'
 import { UnclaimedBalanceModal } from './unclaimed-balance-modal'
 import { GLOBAL_CONFIG } from '@/types/token'
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AlertCircle } from 'lucide-react'
-import { ChainLabel } from './chain-label'
-import { useConnectWalletSimple, getChain, ChainConstants, useErc20, useContracts, ERC20_ABI, GlobalCache, Token } from 'web3-react-ui'
-import { NetworkSelectorModal } from './network-selector-modal'
-import { TokenBalance } from './token-balance'
+import { ChainLabel } from '@/components/web3/chain-label'
+import { useConnectWalletSimple, getChain, ChainConstants, Token } from 'web3-react-ui'
+import { NetworkSelectorModal } from '@/components/web3/network-selector-modal'
+import { TokenBalance } from '@/components/web3/token-balance'
 
 export function TokenEditorSection() {
   const [amount, setAmount] = useState('')

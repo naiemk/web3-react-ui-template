@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Sun, Moon } from 'lucide-react'
 import { useTheme } from './theme-provider'
-import Web3Connect from './web3-connect'
+import Web3Connect from '@/components/web3/web3-connect'
 
 export function Navbar() {
   const { theme, toggleTheme } = useTheme()

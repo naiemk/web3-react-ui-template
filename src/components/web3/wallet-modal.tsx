@@ -4,7 +4,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { ExternalLink, X } from 'lucide-react'
-import { useTheme } from './theme-provider'
+import { useTheme } from '../example/theme-provider'
 import { AddressBox } from './address-box'
 import { getChain, Utils } from 'web3-react-ui'
 
