@@ -23,6 +23,7 @@ export default function RootLayout({
   const [error, setError] = useState<Error | null>(null);
   const [k, setKey] = useState<string>('1');
   const [initialized, setInitialized] = useState(false);
+  console.log(initialized, 'initialized')
 
   return (
     <html lang="en">
@@ -39,7 +40,7 @@ export default function RootLayout({
           providersConfigUrl="https://raw.githubusercontent.com/naiemk/web3-react-ui-template/refs/heads/main/resources/configs/network-list.json"
           configUrlMaps={{
             "TOKENS": "https://raw.githubusercontent.com/naiemk/web3-react-ui-template/refs/heads/main/resources/configs/tokens.json",
-            "APP": "https://raw.githubusercontent.com/naiemk/web3-react-ui-template/refs/heads/main/resources/configs/bridge-contracts.json"
+            "APP": "https://raw.githubusercontent.com/naiemk/web3-react-ui-template/refs/heads/main/src/components/example/example-config.json"
           }}
           onError={(error) => setError(error)}
           onConfigLoaded={(k, v) => {

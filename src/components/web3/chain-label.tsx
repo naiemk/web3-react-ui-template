@@ -1,11 +1,12 @@
+import { DEFAULT_ICON } from "@/types/token"
 import Image from "next/image"
 import { getChain } from "web3-react-ui"
 
 export function ChainLogo({chainId}: {chainId: string}) {
   return (
     <div className="w-6 h-6 rounded-full overflow-hidden bg-background">
-      <img
-        src={getChain(chainId)?.icon!}
+      <Image
+        src={getChain(chainId)?.icon || DEFAULT_ICON}
         alt={getChain(chainId)?.label || ''}
         width={24}
         height={24}

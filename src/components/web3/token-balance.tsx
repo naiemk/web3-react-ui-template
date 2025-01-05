@@ -14,7 +14,7 @@ export const TokenBalance = ({token, userAddress}: {token: Token, userAddress: s
       }
       getBalance()
     }
-  }, [tokenData, userAddress, token]);
+  }, [tokenData, userAddress, token, callMethod, toHumanReadable]);
 
   return (
     <div className="text-sm text-muted-foreground px-2">

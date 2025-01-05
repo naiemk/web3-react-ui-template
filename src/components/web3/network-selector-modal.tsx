@@ -1,7 +1,9 @@
 'use client'
 
+import { DEFAULT_ICON } from '@/types/token'
 import { ListSelectorModal } from './list-selector-modal'
 import { getChain } from 'web3-react-ui'
+import Image from 'next/image'
 
 interface NetworkSelectorModalProps {
   isOpen: boolean
@@ -19,7 +21,7 @@ export function NetworkSelectorModal({
   const titleBar = (
     <>
       <div className="flex items-center gap-3">
-        <span className="text-xl font-semibold">Destination Network</span>
+        <span className="text-xl font-semibold">Select Network</span>
       </div>
     </>
   )
@@ -28,8 +30,8 @@ export function NetworkSelectorModal({
     <>
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 rounded-full overflow-hidden bg-muted dark:bg-muted">
-          <img
-            src={getChain(networkId)?.icon || '/placeholder.svg?height=32&width=32'}
+          <Image
+            src={getChain(networkId)?.icon || DEFAULT_ICON}
             alt={getChain(networkId)?.label || ''}
             width={32}
             height={32}

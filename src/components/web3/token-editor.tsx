@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 import { Token } from 'web3-react-ui'
+import Image from 'next/image'
+import emptyCircle from './empty-circle.svg'
 
 export interface TokenEditorProps {
   value: string
@@ -41,8 +43,8 @@ export function TokenEditor({
         className="flex items-center gap-2 px-2 py-1 h-auto font-normal hover:bg-accent dark:hover:bg-accent dark:text-foreground"
       >
         <div className="w-8 h-8 rounded-full overflow-hidden bg-yellow-400 flex-shrink-0">
-          <img
-            src={selectedToken?.logoURI || ''}
+          <Image
+            src={selectedToken?.logoURI || emptyCircle.src}
             alt={selectedToken?.name || ''}
             width={32}
             height={32}

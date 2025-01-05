@@ -51,7 +51,6 @@ function ConnectWalletButton() {
           onClose={() => setIsModalOpen(false)}
           address={wallet.accounts[0].address}
           chainId={parseInt(wallet.chains[0].id, 16).toString()}
-          balance={{} as any}
           onDisconnect={handleDisconnect}
         />
       )}

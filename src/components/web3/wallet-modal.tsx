@@ -3,20 +3,17 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
-import { ExternalLink, X } from 'lucide-react'
-import { useTheme } from '../example/theme-provider'
+import { ExternalLink } from 'lucide-react'
 import { AddressBox } from './address-box'
 import { getChain, Utils } from 'web3-react-ui'
+import Image from 'next/image'
+import { DEFAULT_ICON } from '@/types/token'
 
 interface WalletModalProps {
   isOpen: boolean
   onClose: () => void
   address: string
   chainId: string
-  balance: {
-    bnb: string
-    cake: string
-  }
   onDisconnect: () => void
 }
 
@@ -25,10 +22,9 @@ export function WalletModal({
   onClose,
   address,
   chainId,
-  balance,
   onDisconnect
 }: WalletModalProps) {
-  const { theme } = useTheme()
+  // const { theme } = useTheme()
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -62,8 +58,7 @@ export function WalletModal({
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <img src={getChain(chainId)?.icon} alt={getChain(chainId)?.label || '?'} width={24} height={24} />
-                  {/* <div className="h-6 w-6 rounded-full bg-yellow-400 flex-shrink-0" /> */}
+                  <Image src={getChain(chainId)?.icon || DEFAULT_ICON} alt={getChain(chainId)?.label || '?'} width={24} height={24} />
                   <span className="text-sm">{getChain(chainId)?.label || '?'}</span>
                 </div>
                 <a

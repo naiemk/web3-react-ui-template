@@ -15,7 +15,7 @@ import { NetworkSelectorModal } from '@/components/web3/network-selector-modal'
 import { TokenBalance } from '@/components/web3/token-balance'
 
 interface AppConfig {
-  bridgeContracts: {
+  'bridge-contracts': {
     [chainId: string]: string
   }
 }
@@ -28,26 +28,27 @@ export function TokenEditorSection() {
   // Token selector
   const [isTokenSelectorOpen, setIsTokenSelectorOpen] = useState(false)
   const [selectedToken, setSelectedToken] = useState<Token | null>(null)
-  const [onTokenSelect, setOnTokenSelect] = useState<any>({})
+  const [onTokenSelect, setOnTokenSelect] = useState<{selector?: (token: Token) => void}>({})
   // Network selector
   const [isNetworkSelectorOpen, setIsNetowrkSelectorOpen] = useState(false)
   const [selectedNetworkId, setSelectedNetworkId] = useState<string>('');
-  const [onNetworkSelect, setOnNetworkSelect] = useState<any>({})
+  const [onNetworkSelect, setOnNetworkSelect] = useState<{selector?: (networkId: string) => void}>({})
 
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [errorMessage, /*setErrorMessage*/] = useState<string | null>(null)
   const [isUnclaimedBalanceModalOpen, setIsUnclaimedBalanceModalOpen] = useState(false)
   const chainIds = Object.keys(ChainConstants);
   const tokens = GLOBAL_CONFIG['TOKENS'] as Token[] || []; // This comes from the config file passed in layout...
   const appConfig = GLOBAL_CONFIG['APP'] as AppConfig || {};
-  const bridgeContractAddress = appConfig?.bridgeContracts?.[chainId || '-'] || null;
+  const bridgeContractAddress = appConfig?.['bridge-contracts']?.[chainId || '-'] || null;
+  console.log(bridgeContractAddress, 'bridgeContractAddress', appConfig)
 
   const handleNetowrkSelect = (networkId: string) => {
-    onNetworkSelect.selector && onNetworkSelect.selector(networkId)
+    onNetworkSelect.selector?.(networkId)
     setIsNetowrkSelectorOpen(false)
   }
 
   const handleTokenSelect = (token: Token) => {
-    onTokenSelect.selector && onTokenSelect.selector(token)
+    onTokenSelect.selector?.(token)
     setIsTokenSelectorOpen(false)
   }
 
@@ -122,7 +123,7 @@ export function TokenEditorSection() {
                   onClick={onApprove}
                   disabled={pending}
                 >
-                  Swap {pending ? '...' : ''}
+                  Approve {pending ? '...' : ''}
                 </Button>)}
           actionButton={
                 <Button 

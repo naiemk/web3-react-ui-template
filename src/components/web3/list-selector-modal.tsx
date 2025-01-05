@@ -6,8 +6,11 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import Image from 'next/image'
+import { DEFAULT_ICON } from '@/types/token'
+
 
 interface CommonItem {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   item: any
   name: string
   logo: string
@@ -16,13 +19,16 @@ interface CommonItem {
 interface ListSelectorModalProps {
   isOpen: boolean
   onClose: () => void
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSelect: (item: any) => void
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   items: any[]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   itemRenderer: (item: any) => React.ReactNode
   commonItems?: CommonItem[]
   displayCommonItems?: boolean
   title: string // Added title prop
-  titleBar: React.ReactNode
+  titleBar?: React.ReactNode
   searchPlaceholder?: string
 }
 
@@ -68,7 +74,7 @@ export function ListSelectorModal({
         <div className="flex flex-col h-full overflow-hidden">
           {/* Title Bar */}
           <div className="flex-shrink-0 flex items-center justify-between p-4 border-b border-border">
-              {titleBar}
+              {titleBar || title}
           </div>
 
           {/* Search */}
@@ -94,8 +100,8 @@ export function ListSelectorModal({
                     onClick={() => onSelect(commonItem.item)}
                   >
                     <div className="w-5 h-5 rounded-full overflow-hidden bg-muted">
-                      <img
-                        src={commonItem.logo}
+                      <Image
+                        src={commonItem.logo || DEFAULT_ICON}
                         alt={commonItem.name}
                         width={20}
                         height={20}

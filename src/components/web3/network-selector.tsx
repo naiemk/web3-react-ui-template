@@ -1,8 +1,10 @@
 'use client'
 
 import { Button } from "@/components/ui/button"
+import { DEFAULT_ICON } from "@/types/token"
 import { ChevronDown } from 'lucide-react'
 import { getChain } from 'web3-react-ui'
+import Image from 'next/image'
 
 interface NetworkSelectorProps {
   selectedNetworkId: string
@@ -33,9 +35,9 @@ export function NetworkSelector({
         {selectedNetwork ? (
         <div className="flex items-center gap-2">
           <div className="w-6 h-6 rounded-full overflow-hidden bg-muted">
-            <img
-              src={selectedNetwork.icon || '/placeholder.svg?height=24&width=24'}
-              alt={selectedNetwork.label}
+            <Image
+              src={selectedNetwork.icon || DEFAULT_ICON}
+              alt={selectedNetwork.label || ''}
               width={24}
               height={24}
             />

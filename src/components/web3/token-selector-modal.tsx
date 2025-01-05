@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from "@/components/ui/button"
-import { Copy, ExternalLink, Plus, X } from 'lucide-react'
+import { Copy, ExternalLink, Plus } from 'lucide-react'
 import { copyToClipboard } from '@/utils/web3'
 import { useToast } from "@/hooks/use-toast"
 import { ListSelectorModal } from './list-selector-modal'
@@ -12,6 +12,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { Token, Utils } from "web3-react-ui"
+import Image from 'next/image'
+import { DEFAULT_ICON } from "@/types/token"
+import emptyCircle from './empty-circle.svg'
 
 export interface TokenSelectorModalProps {
   isOpen: boolean
@@ -43,8 +46,10 @@ export function TokenSelectorModal({
 
   const handleAddToMetamask = async (token: Token) => {
     try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if (!(window as any).ethereum || !token.address) return
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await (window as any).ethereum.request({
         method: 'wallet_watchAsset',
         params: {
@@ -70,15 +75,15 @@ export function TokenSelectorModal({
 
   const openExplorer = (token: Token) => {
     const url = Utils.addressLink(token.chainId, token.address);
-    url && window.open(url)
+    if (url) window.open(url)
   }
 
   const titleBar = (
     <>
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 rounded-full overflow-hidden bg-yellow-400">
-          <img
-            src={selectedToken?.logoURI || '-'}
+          <Image
+            src={selectedToken?.logoURI || emptyCircle.src}
             alt={selectedToken?.name || ''}
             width={32}
             height={32}
@@ -146,8 +151,8 @@ export function TokenSelectorModal({
     <>
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 rounded-full overflow-hidden bg-yellow-400">
-          <img
-            src={token?.logoURI || '-'}
+          <Image
+            src={token?.logoURI || DEFAULT_ICON}
             alt={token?.symbol || ''}
             width={32}
             height={32}
